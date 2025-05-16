@@ -15,6 +15,8 @@ namespace SbomCleanupService
         // Can use variable below if you don't want to set up an environment variable.
         //private const string ConnectionString = "Host=localhost;Username=postgres;Password=postgres;Database=sbomdb";
 
+        //Test push
+
         private string _pipelineOrganization = "trafikverket";
         private string _pipelineProject = "BTHVulnerabilityChecker";
         private string _pipelineId = "";
