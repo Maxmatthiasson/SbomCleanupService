@@ -1,17 +1,24 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Npgsql;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 public class PipelineEntry
 {
-    public string collection { get; set; }
-    public string project { get; set; }
-    public string buildNumber { get; set; }
+    [JsonPropertyName("collection")]
+    public string? Collection { get; set; }
+
+    [JsonPropertyName("project")]
+    public string? Project { get; set; }
+
+    [JsonPropertyName("build_number")]
+    public string? BuildNumber { get; set; }
 }
 
 
@@ -21,25 +28,26 @@ namespace SbomCleanupService
     {
         private readonly ILogger<Worker> _logger;
         private readonly string? _connectionString; // Using environment variable SbomDbConnectionString
-        // Can use variable below if you don't want to set up an environment variable.
-        //private const string ConnectionString = "Host=localhost;Username=postgres;Password=postgres;Database=sbomdb";
-
-        //Test push
-
-        //private string _pipelineOrganization = "trafikverket";
-        //private string _pipelineProject = "BTHVulnerabilityChecker";
-        //private string _pipelineId = "";
-
-        // GET https://dev.azure.com/{organization}/{project}/_apis/pipelines/{pipelineId}?api-version=7.1
+        private readonly string? _pat; // Using environment variable SbomCleanupPAT
+        private int _rowsDeleted;
 
         public Worker(ILogger<Worker> logger)
         {
             _logger = logger;
             _connectionString = Environment.GetEnvironmentVariable("SbomDbConnectionString");
+            _pat = Environment.GetEnvironmentVariable("SbomCleanupPAT");
+            _logger.LogInformation("Loaded PAT (first 5 chars): {pat}", _pat?.Substring(0, 5));
+
+            _rowsDeleted = 0;
 
             if (string.IsNullOrWhiteSpace(_connectionString))
             {
                 throw new InvalidOperationException("SbomDbConnectionString environment variable not set.");
+            }
+
+            if (string.IsNullOrWhiteSpace(_pat))
+            {
+                throw new InvalidOperationException("PAT not set in environment variable SbomCleanupPAT.");
             }
         }
 
@@ -47,9 +55,23 @@ namespace SbomCleanupService
         {
             _logger.LogInformation("SbomCleanupService started at: {time}", DateTimeOffset.Now);
 
-            const string pat = ""; // <-- Set your Azure DevOps PAT here
-            var encodedPat = Convert.ToBase64String(Encoding.ASCII.GetBytes($":{pat}"));
+            var encodedPat = Convert.ToBase64String(Encoding.ASCII.GetBytes($":{_pat}"));
             var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", encodedPat);
+
+            var testUrl = "https://dev.azure.com/trafikverket/_apis/projects?api-version=7.1-preview.4";
+            var testResponse = await httpClient.GetAsync(testUrl);
+
+            if (!testResponse.IsSuccessStatusCode)
+            {
+                var testContent = await testResponse.Content.ReadAsStringAsync();
+                _logger.LogWarning("PAT test failed: {status} - {message}", testResponse.StatusCode, testContent);
+            }
+            else
+            {
+                _logger.LogInformation("PAT test successful.");
+            }
+
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -58,16 +80,11 @@ namespace SbomCleanupService
                     using var conn = new NpgsqlConnection(_connectionString);
                     await conn.OpenAsync(stoppingToken);
 
-                    // Archive old entries
-                    //string archiveSql = "UPDATE sbom_table SET archived = true WHERE updated_at < NOW() - INTERVAL '30 days';";
-                    //using var archiveCmd = new NpgsqlCommand(archiveSql, conn);
-                    //int rowsDeleted = await archiveCmd.ExecuteNonQueryAsync(stoppingToken);
-
                     // Fetch non-archived entries
                     string selectSql = @"
                         SELECT json_agg(row_to_json(t)) 
                         FROM (
-                            SELECT collection, project, buildNumber 
+                            SELECT collection, project, build_number 
                             FROM sbom_table 
                             WHERE archived = false
                         ) t;
@@ -92,7 +109,7 @@ namespace SbomCleanupService
                         _logger.LogInformation("No non-archived SBOM entries found.");
                     }
 
-                    _logger.LogInformation("Archived {count} old entries at {time}", rowsDeleted, DateTimeOffset.Now);
+                    _logger.LogInformation("Archived {count} old entries at {time}", _rowsDeleted, DateTimeOffset.Now);
                 }
                 catch (Exception ex)
                 {
@@ -104,6 +121,7 @@ namespace SbomCleanupService
 
             _logger.LogInformation("SbomCleanupService stopping at: {time}", DateTimeOffset.Now);
         }
+
         private async Task CheckPipelineAsync(
             List<PipelineEntry> entries,
             string encodedPat,
@@ -112,7 +130,7 @@ namespace SbomCleanupService
         {
             foreach (var entry in entries)
             {
-                string url = $"https://vsrm.dev.azure.com/{entry.collection}/{entry.project}/_apis/release/releases?artifactType=Build&$expand=artifacts&api-version=7.1-preview.8";
+                string url = $"https://vsrm.dev.azure.com/{entry.Collection}/{entry.Project}/_apis/release/releases?artifactType=Build&$expand=artifacts&api-version=7.1-preview.8";
 
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Authorization = new AuthenticationHeaderValue("Basic", encodedPat);
@@ -145,7 +163,7 @@ namespace SbomCleanupService
                                 .GetProperty("name")
                                 .GetString();
 
-                            if (version == entry.buildNumber)
+                            if (version == entry.BuildNumber)
                             {
                                 isActive = true;
                                 break;
@@ -158,11 +176,11 @@ namespace SbomCleanupService
 
                 if (isActive)
                 {
-                    _logger.LogInformation("Build {BuildNumber} is still active in Azure DevOps.", entry.buildNumber);
+                    _logger.LogInformation("Build {BuildNumber} is still active in Azure DevOps.", entry.BuildNumber);
                 }
                 else
                 {
-                    _logger.LogInformation("Build {BuildNumber} is inactive, can be archived.", entry.buildNumber);
+                    _logger.LogInformation("Build {BuildNumber} is inactive, can be archived.", entry.BuildNumber);
                     using var conn = new NpgsqlConnection(_connectionString);
                     await conn.OpenAsync(stoppingToken);
 
@@ -171,20 +189,20 @@ namespace SbomCleanupService
                         SET archived = true 
                         WHERE collection = @collection 
                           AND project = @project 
-                          AND buildNumber = @buildNumber;
+                          AND build_number = @buildNumber;
                     ";
 
                     using var updateCmd = new NpgsqlCommand(updateSql, conn);
-                    updateCmd.Parameters.AddWithValue("collection", entry.collection);
-                    updateCmd.Parameters.AddWithValue("project", entry.project);
-                    updateCmd.Parameters.AddWithValue("buildNumber", entry.buildNumber);
+                    updateCmd.Parameters.AddWithValue("collection", entry.Collection);
+                    updateCmd.Parameters.AddWithValue("project", entry.Project);
+                    updateCmd.Parameters.AddWithValue("buildNumber", entry.BuildNumber);  // Reference to BuildNumber property
 
                     int affected = await updateCmd.ExecuteNonQueryAsync(stoppingToken);
+                    _rowsDeleted += affected;
                     _logger.LogInformation("Marked {count} entry as archived.", affected);
                     // Optional: update archived flag here if desired
                 }
             }
         }
-
     }
 }

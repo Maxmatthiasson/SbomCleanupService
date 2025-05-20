@@ -11,10 +11,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("dotnet-SbomCleanupService-994106da-692e-46cc-b49a-f690d213d192")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("SbomCleanupService")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bc7559e084e143754dd731909a4ddaa0bd65039e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cf2c35d4b696529cabd735ec120b0deebb8bc207")]
 [assembly: System.Reflection.AssemblyProductAttribute("SbomCleanupService")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SbomCleanupService")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

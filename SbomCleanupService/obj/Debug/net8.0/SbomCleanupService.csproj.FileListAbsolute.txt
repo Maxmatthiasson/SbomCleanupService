@@ -50,3 +50,4 @@ C:\Users\Maxma\source\repos\SbomCleanupService\SbomCleanupService\bin\Debug\net8
 C:\Users\Maxma\source\repos\SbomCleanupService\SbomCleanupService\bin\Debug\net8.0\Microsoft.Extensions.Hosting.WindowsServices.dll
 C:\Users\Maxma\source\repos\SbomCleanupService\SbomCleanupService\bin\Debug\net8.0\System.ServiceProcess.ServiceController.dll
 C:\Users\Maxma\source\repos\SbomCleanupService\SbomCleanupService\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.ServiceProcess.ServiceController.dll
+C:\Users\Maxma\source\repos\SbomCleanupService\SbomCleanupService\obj\Debug\net8.0\SbomCleanupService.sourcelink.json
