@@ -1,13 +1,13 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Maxma\\source\\repos\\SbomCleanupService\\",
+  "WorkspaceRootPath": "C:\\Users\\Proj\\source\\repos\\Maxmatthiasson\\SbomCleanupService\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{998AE05F-D772-45D8-8DD9-483B38FE7BD7}|SbomCleanupService\\SbomCleanupService.csproj|c:\\users\\maxma\\source\\repos\\sbomcleanupservice\\sbomcleanupservice\\worker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{998AE05F-D772-45D8-8DD9-483B38FE7BD7}|SbomCleanupService\\SbomCleanupService.csproj|c:\\users\\proj\\source\\repos\\maxmatthiasson\\sbomcleanupservice\\sbomcleanupservice\\worker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{998AE05F-D772-45D8-8DD9-483B38FE7BD7}|SbomCleanupService\\SbomCleanupService.csproj|solutionrelative:sbomcleanupservice\\worker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{998AE05F-D772-45D8-8DD9-483B38FE7BD7}|SbomCleanupService\\SbomCleanupService.csproj|c:\\users\\maxma\\source\\repos\\sbomcleanupservice\\sbomcleanupservice\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{998AE05F-D772-45D8-8DD9-483B38FE7BD7}|SbomCleanupService\\SbomCleanupService.csproj|c:\\users\\proj\\source\\repos\\maxmatthiasson\\sbomcleanupservice\\sbomcleanupservice\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{998AE05F-D772-45D8-8DD9-483B38FE7BD7}|SbomCleanupService\\SbomCleanupService.csproj|solutionrelative:sbomcleanupservice\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -18,15 +18,19 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Maxma\\source\\repos\\SbomCleanupService\\SbomCleanupService\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\Proj\\source\\repos\\Maxmatthiasson\\SbomCleanupService\\SbomCleanupService\\Program.cs",
               "RelativeDocumentMoniker": "SbomCleanupService\\Program.cs",
-              "ToolTip": "C:\\Users\\Maxma\\source\\repos\\SbomCleanupService\\SbomCleanupService\\Program.cs",
+              "ToolTip": "C:\\Users\\Proj\\source\\repos\\Maxmatthiasson\\SbomCleanupService\\SbomCleanupService\\Program.cs",
               "RelativeToolTip": "SbomCleanupService\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -36,11 +40,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Worker.cs",
-              "DocumentMoniker": "C:\\Users\\Maxma\\source\\repos\\SbomCleanupService\\SbomCleanupService\\Worker.cs",
+              "DocumentMoniker": "C:\\Users\\Proj\\source\\repos\\Maxmatthiasson\\SbomCleanupService\\SbomCleanupService\\Worker.cs",
               "RelativeDocumentMoniker": "SbomCleanupService\\Worker.cs",
-              "ToolTip": "C:\\Users\\Maxma\\source\\repos\\SbomCleanupService\\SbomCleanupService\\Worker.cs",
+              "ToolTip": "C:\\Users\\Proj\\source\\repos\\Maxmatthiasson\\SbomCleanupService\\SbomCleanupService\\Worker.cs",
               "RelativeToolTip": "SbomCleanupService\\Worker.cs",
-              "ViewState": "AgIAACoAAAAAAAAAAAAAAD8AAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-09T15:42:28.553Z",
               "EditorCaption": ""
