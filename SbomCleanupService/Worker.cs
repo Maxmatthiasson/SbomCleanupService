@@ -21,7 +21,6 @@ public class PipelineEntry
     public string? BuildNumber { get; set; }
 }
 
-
 namespace SbomCleanupService
 {
     public class Worker : BackgroundService
@@ -29,16 +28,15 @@ namespace SbomCleanupService
         private readonly ILogger<Worker> _logger;
         private readonly string? _connectionString; // Using environment variable SbomDbConnectionString
         private readonly string? _pat; // Using environment variable SbomCleanupPAT
-        private int _rowsDeleted;
+        private int _rowsArchived;
 
         public Worker(ILogger<Worker> logger)
         {
             _logger = logger;
             _connectionString = Environment.GetEnvironmentVariable("SbomDbConnectionString");
             _pat = Environment.GetEnvironmentVariable("SbomCleanupPAT");
-            _logger.LogInformation("Loaded PAT (first 5 chars): {pat}", _pat?.Substring(0, 5));
 
-            _rowsDeleted = 0;
+            _rowsArchived = 0;
 
             if (string.IsNullOrWhiteSpace(_connectionString))
             {
@@ -58,20 +56,6 @@ namespace SbomCleanupService
             var encodedPat = Convert.ToBase64String(Encoding.ASCII.GetBytes($":{_pat}"));
             var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", encodedPat);
-
-            var testUrl = "https://dev.azure.com/trafikverket/_apis/projects?api-version=7.1-preview.4";
-            var testResponse = await httpClient.GetAsync(testUrl);
-
-            if (!testResponse.IsSuccessStatusCode)
-            {
-                var testContent = await testResponse.Content.ReadAsStringAsync();
-                _logger.LogWarning("PAT test failed: {status} - {message}", testResponse.StatusCode, testContent);
-            }
-            else
-            {
-                _logger.LogInformation("PAT test successful.");
-            }
-
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -109,7 +93,7 @@ namespace SbomCleanupService
                         _logger.LogInformation("No non-archived SBOM entries found.");
                     }
 
-                    _logger.LogInformation("Archived {count} old entries at {time}", _rowsDeleted, DateTimeOffset.Now);
+                    _logger.LogInformation("Archived {count} old entries at {time}", _rowsArchived, DateTimeOffset.Now);
                 }
                 catch (Exception ex)
                 {
@@ -195,12 +179,11 @@ namespace SbomCleanupService
                     using var updateCmd = new NpgsqlCommand(updateSql, conn);
                     updateCmd.Parameters.AddWithValue("collection", entry.Collection);
                     updateCmd.Parameters.AddWithValue("project", entry.Project);
-                    updateCmd.Parameters.AddWithValue("buildNumber", entry.BuildNumber);  // Reference to BuildNumber property
+                    updateCmd.Parameters.AddWithValue("buildNumber", entry.BuildNumber);
 
                     int affected = await updateCmd.ExecuteNonQueryAsync(stoppingToken);
-                    _rowsDeleted += affected;
+                    _rowsArchived += affected;
                     _logger.LogInformation("Marked {count} entry as archived.", affected);
-                    // Optional: update archived flag here if desired
                 }
             }
         }

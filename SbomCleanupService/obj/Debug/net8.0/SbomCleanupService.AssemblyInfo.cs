@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SbomCleanupService")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cf2c35d4b696529cabd735ec120b0deebb8bc207")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5ac9d62c8e53d839f1816fbad87221f18003cc40")]
 [assembly: System.Reflection.AssemblyProductAttribute("SbomCleanupService")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SbomCleanupService")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
