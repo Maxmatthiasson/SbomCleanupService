@@ -1,3 +1,9 @@
+/// <summary>
+/// SbomCleanupService is a background worker that connects to a PostgreSQL database,
+/// fetches entries from a table in a database containing SBOM information, 
+/// checks their associated Azure DevOps pipelines, and archives those no longer active.
+/// </summary>
+
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Npgsql;
@@ -35,7 +41,6 @@ namespace SbomCleanupService
             _logger = logger;
             _connectionString = Environment.GetEnvironmentVariable("SbomDbConnectionString");
             _pat = Environment.GetEnvironmentVariable("SbomCleanupPAT");
-
             _rowsArchived = 0;
 
             if (string.IsNullOrWhiteSpace(_connectionString))
@@ -106,6 +111,8 @@ namespace SbomCleanupService
             _logger.LogInformation("SbomCleanupService stopping at: {time}", DateTimeOffset.Now);
         }
 
+        // Checks each SBOM entry's associated pipeline in Azure DevOps
+        // and archives the entry in the database if the pipeline is no longer active
         private async Task CheckPipelineAsync(
             List<PipelineEntry> entries,
             string encodedPat,
