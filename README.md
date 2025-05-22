@@ -65,6 +65,7 @@ Example using `sc.exe` (after publishing):
 ```bash
 sc create SbomCleanupService binPath= "C:\path\to\SbomCleanupService.exe"
 ```
+Instead of using dotnet build and dotrun run you can also start the service by running it in Visual Studio or in the Windows services menu after it has been installed as a windows service using the command above.
 
 ## Database Schema Example
 
