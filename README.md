@@ -1,8 +1,8 @@
-# 🧹 SbomCleanupService
+# SbomCleanupService
 
 **SbomCleanupService** is a background worker built with .NET 8 that automates the archival of outdated Software Bill of Materials (SBOM) data. It connects to a PostgreSQL database, evaluates SBOM entries against Azure DevOps pipelines, and archives entries that are no longer associated with active builds.
 
-## 🚀 Features
+## Features
 
 * Connects to a PostgreSQL database to fetch SBOM entries.
 * Authenticates with Azure DevOps using a Personal Access Token (PAT).
@@ -10,19 +10,19 @@
 * Automatically marks outdated SBOM records as archived.
 * Runs on a daily schedule as a Windows Service.
 
-## 📁 Project Structure
+## Project Structure
 
 * **`Worker.cs`**: Core background service that handles the cleanup logic.
 * **`Program.cs`**: Entry point that sets up the worker as a Windows Service.
 
-## 🔧 Prerequisites
+## Prerequisites
 
 * .NET 8 SDK
 * PostgreSQL database
 * Azure DevOps account with valid PAT
 * Windows system (for running as a service)
 
-## ⚙️ Environment Variables
+## Environment Variables
 
 Set the following environment variables before running the service:
 
@@ -33,7 +33,7 @@ Set the following environment variables before running the service:
 
 Alternatively set-up another way to store the connection string and PAT.
 
-## 🛠️ Setup & Running
+## Setup & Running
 
 ### 1. Build the project
 
@@ -66,38 +66,38 @@ Example using `sc.exe` (after publishing):
 sc create SbomCleanupService binPath= "C:\path\to\SbomCleanupService.exe"
 ```
 
-## 🗃️ Database Schema Example
+## Database Schema Example
 
 Expected table format in PostgreSQL:
 
 ```sql
-        CREATE TABLE sbom_table (
-            id SERIAL PRIMARY KEY,
-            sbom_data JSONB,
-            collection VARCHAR(255),
-            project VARCHAR(255),
-            build_number VARCHAR(255),
-            archived BOOLEAN DEFAULT FALSE,
-            created_at TIMESTAMPTZ DEFAULT NOW(),
-            updated_at TIMESTAMPTZ DEFAULT NOW(),
-            UNIQUE (collection, project)
-        );
+CREATE TABLE sbom_table (
+    id SERIAL PRIMARY KEY,
+    sbom_data JSONB,
+    collection VARCHAR(255),
+    project VARCHAR(255),
+    build_number VARCHAR(255),
+    archived BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (collection, project)
+);
 ```
 
-## 🔄 How It Works
+## How It Works
 
 1. Fetch all SBOM records where `archived = false`.
 2. Query Azure DevOps to check if the associated build is active.
 3. If the build is **not found**, the record is marked as `archived = true`.
 4. Logs all actions and errors for auditing.
 
-## 📝 Logging
+## Logging
 
 * Logs include timestamps and operation statuses.
 * Uses `ILogger` for structured logging.
 * Can be redirected to file/event log when run as a Windows Service.
 
-## 📅 Scheduling
+## Scheduling
 
 The cleanup process runs on start and then **once every 24 hours** by default, using:
 
