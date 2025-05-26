@@ -8,7 +8,7 @@
 * Authenticates with Azure DevOps using a Personal Access Token (PAT).
 * Checks if SBOM-related pipelines are still active.
 * Automatically marks outdated SBOM records as archived.
-* Runs on a daily schedule as a Windows Service.
+* Runs on a daily schedule as a Windows Service as well as on start-up.
 
 ## Project Structure
 
@@ -65,7 +65,7 @@ Example using `sc.exe` (after publishing):
 ```bash
 sc create SbomCleanupService binPath= "C:\path\to\SbomCleanupService.exe"
 ```
-Instead of using dotnet build and dotrun run you can also start the service by running it in Visual Studio or in the Windows services menu after it has been installed as a windows service using the command above.
+Instead of using dotnet build and dotnet run you can also start the service by running it in Visual Studio or in the Windows services menu after it has been published and created as a windows service using the command above.
 
 ## Database Schema Example
 
