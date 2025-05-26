@@ -56,7 +56,12 @@ $env:SbomCleanupPAT="your_azure_devops_pat"
 dotnet run
 ```
 
-### 4. Install as a Windows Service
+### 4. Publish and Install as a Windows Service
+
+**How to publish in Visual Studio**
+1. Right click the project and select Publish...
+2. Set the target location to something appropriate like sbomcleanupservice\bin\release\net8.0\publish
+3. Press the publish button.
 
 You can register the worker as a Windows Service using `sc.exe` or [PowerShell scripts](https://learn.microsoft.com/en-us/dotnet/core/extensions/windows-service#installing-a-windows-service).
 
@@ -65,7 +70,8 @@ Example using `sc.exe` (after publishing):
 ```bash
 sc create SbomCleanupService binPath= "C:\path\to\SbomCleanupService.exe"
 ```
-Instead of using dotnet build and dotnet run you can also start the service by running it in Visual Studio or in the Windows services menu after it has been published and created as a windows service using the command above.
+
+Instead of using dotnet build and dotnet run you can also start the service by running it in Visual Studio or in the Windows services menu after it has been published and created as a windows service.
 
 ## Database Schema Example
 
