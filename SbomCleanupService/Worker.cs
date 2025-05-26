@@ -1,8 +1,6 @@
-/// <summary>
 /// SbomCleanupService is a background worker that connects to a PostgreSQL database,
 /// fetches entries from a table in a database containing SBOM information, 
 /// checks their associated Azure DevOps pipelines, and archives those no longer active.
-/// </summary>
 
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
