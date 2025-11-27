@@ -31,7 +31,7 @@ Set the following environment variables before running the service:
 | `SbomDbConnectionString` | PostgreSQL connection string to the SBOM table |
 | `SbomCleanupPAT`         | Azure DevOps Personal Access Token             |
 
-Alternatively set-up another way to store the connection string and PAT.
+Alternatively set up another way to store the connection string and PAT.
 
 ## Setup & Running
 
@@ -48,6 +48,13 @@ You can set these permanently in Windows or temporarily in a terminal:
 ```bash
 $env:SbomDbConnectionString="Host=localhost;Username=sbom_user;Password=yourpassword;Database=sbom_db"
 $env:SbomCleanupPAT="your_azure_devops_pat"
+```
+
+Or in Linux/macOS (Bash) example:
+
+```bash
+export SbomDbConnectionString="Host=localhost;Username=sbom_user;Password=yourpassword;Database=sbom_db"
+export SbomCleanupPAT="your_azure_devops_pat"
 ```
 
 ### 3. Run the worker manually
